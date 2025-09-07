@@ -25,13 +25,43 @@ const GroupChatContainer = () => {
   // Updated useEffect: Added real-time subscription for group messages
   // Previously only fetched messages once, now subscribes for live updates
   // This ensures group members see new messages immediately without refresh
+  // useEffect(() => {
+  //   if (activeGroup) {
+  //     getGroupMessages(activeGroup._id);
+  //     subscribeToGroupMessages();
+  //     return () => unsubscribeFromGroupMessages();
+  //   }
+  // }, [activeGroup, getGroupMessages, subscribeToGroupMessages, unsubscribeFromGroupMessages]);
+
   useEffect(() => {
-    if (activeGroup) {
-      getGroupMessages(activeGroup._id);
-      subscribeToGroupMessages();
-      return () => unsubscribeFromGroupMessages();
+    if (!activeGroup) return;
+
+    const socket = useAuthStore.getState().socket;
+
+    // 1. Fetch existing messages
+    getGroupMessages(activeGroup._id);
+
+    // 2. Join group room (VERY IMPORTANT for realtime to work)
+    if (socket) {
+      socket.emit("joinGroup", activeGroup._id);
     }
-  }, [activeGroup, getGroupMessages, subscribeToGroupMessages, unsubscribeFromGroupMessages]);
+
+    // 3. Subscribe for new messages
+    subscribeToGroupMessages();
+
+    return () => {
+      // Leave group when switching groups or unmounting
+      if (socket) {
+        socket.emit("leaveGroup", activeGroup._id);
+      }
+      unsubscribeFromGroupMessages();
+    };
+  }, [
+    activeGroup,
+    getGroupMessages,
+    subscribeToGroupMessages,
+    unsubscribeFromGroupMessages,
+  ]);
 
   // Auto-scroll functionality remains the same - works well for group chats
   useEffect(() => {
@@ -42,7 +72,7 @@ const GroupChatContainer = () => {
 
   if (isGroupMessagesLoading) {
     return (
-      <div className="flex flex-col flex-1 overflow-auto relative">
+      <div className="relative flex flex-col flex-1 overflow-auto">
         <ChatHeader setShowGroupInfo={setShowGroupInfo} />
         <MessageSkeleton />
         <MessageInput />
@@ -54,7 +84,7 @@ const GroupChatContainer = () => {
   }
 
   return (
-    <div className="flex flex-col flex-1 overflow-auto relative">
+    <div className="relative flex flex-col flex-1 overflow-auto">
       <ChatHeader setShowGroupInfo={setShowGroupInfo} />
       <div className="flex-1 p-4 space-y-4 overflow-y-auto">
         {/* OLD SIMPLE MESSAGE LAYOUT - COMMENTED OUT
@@ -91,7 +121,7 @@ const GroupChatContainer = () => {
           </div>
         ))}
         */}
-        
+
         {/* NEW CHAT BUBBLE DESIGN FOR GROUP CHATS */}
         {/* Using DaisyUI chat component structure like ChatContainer but with group-specific colors */}
         {groupMessages.map((message, index) => {
@@ -102,16 +132,28 @@ const GroupChatContainer = () => {
           // const messageSenderIdStr = String(message.senderId);
           // const authUserIdStr = String(authUser._id);
           // const isCurrentUserMessage = messageSenderIdStr === authUserIdStr;
-          
+
           // NEW COMPARISON - Fixed to handle both populated and non-populated senderId
           const messageSenderId = message.senderId._id || message.senderId; // Handle populated object
           const messageSenderIdStr = String(messageSenderId);
           const authUserIdStr = String(authUser._id);
           const isCurrentUserMessage = messageSenderIdStr === authUserIdStr;
-          
+
           // Debug logging to verify the fix
-          console.log("Message sender ID:", messageSenderId, "(type:", typeof messageSenderId, ")");
-          console.log("Auth user ID:", authUser._id, "(type:", typeof authUser._id, ")");
+          console.log(
+            "Message sender ID:",
+            messageSenderId,
+            "(type:",
+            typeof messageSenderId,
+            ")"
+          );
+          console.log(
+            "Auth user ID:",
+            authUser._id,
+            "(type:",
+            typeof authUser._id,
+            ")"
+          );
           console.log("Is current user message:", isCurrentUserMessage);
 
           return (
@@ -131,39 +173,41 @@ const GroupChatContainer = () => {
                       isCurrentUserMessage
                         ? authUser.avatar?.url || "/avatar.png"
                         : // FIXED: Handle both populated and non-populated senderId for avatar
-                          (message.senderId?.avatar?.url || 
-                           message.senderAvatar || 
-                           "/avatar.png")
+                          message.senderId?.avatar?.url ||
+                          message.senderAvatar ||
+                          "/avatar.png"
                     }
                     alt="profile pic"
                   />
                 </div>
               </div>
-              
+
               {/* Message Header with Sender Name and Time */}
               {/* In group chats, we show sender name for identification */}
               <div className="mb-1 chat-header">
                 {!isCurrentUserMessage && (
                   <span className="text-sm font-medium">
                     {/* FIXED: Handle both populated and non-populated senderId for name */}
-                    {message.senderId?.fullName || 
-                     message.senderName || 
-                     "Unknown User"}
+                    {message.senderId?.fullName ||
+                      message.senderName ||
+                      "Unknown User"}
                   </span>
                 )}
                 <time className="ml-1 text-xs opacity-50">
                   {formatMessageTime(message.createdAt)}
                 </time>
               </div>
-              
+
               {/* Message Bubble with Group Chat Specific Colors */}
               {/* Using different colors for group chat: purple for sender, teal for receiver */}
               {/* This differentiates group chats from private chats visually */}
-              <div className={`flex flex-col chat-bubble ${
-                isCurrentUserMessage 
-                  ? "chat-bubble-secondary bg-purple-600 text-white" // Purple for sender in group chat
-                  : "chat-bubble-primary bg-teal-600 text-white"      // Teal for receiver in group chat
-              }`}>
+              <div
+                className={`flex flex-col chat-bubble ${
+                  isCurrentUserMessage
+                    ? "chat-bubble-secondary bg-purple-600 text-white" // Purple for sender in group chat
+                    : "chat-bubble-primary bg-teal-600 text-white" // Teal for receiver in group chat
+                }`}
+              >
                 {/* Multiple Image Support */}
                 {/* Enhanced from old single image to support multiple images like ChatContainer */}
                 {/* FIXED: Changed from message.image to message.images to match group message model */}

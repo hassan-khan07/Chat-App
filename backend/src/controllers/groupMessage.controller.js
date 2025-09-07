@@ -7,9 +7,9 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { getReceiverSocketId, io } from "../utils/socket.js";
 
 export const sendGroupMessage = asyncHandler(async (req, res) => {
-  console.log("Group message upload - req.files:", req.files);
-  console.log("Group message upload - req.body:", req.body);
-  
+  // console.log("Group message upload - req.files:", req.files);
+  // console.log("Group message upload - req.body:", req.body);
+
   const { text } = req.body;
   const { groupId } = req.params;
   const senderId = req.user._id;
@@ -41,14 +41,19 @@ export const sendGroupMessage = asyncHandler(async (req, res) => {
   // Route now uses upload.fields([{ name: "image", maxCount: 5 }]) like regular messages
   // This creates req.files.image array, same as regular messages for consistency
   if (req.files?.image?.length > 0) {
-    console.log("Processing uploaded group images:", req.files.image.length);
+    // console.log("Processing uploaded group images:", req.files.image.length);
     const uploadPromises = req.files.image.map((file) => {
-      console.log("Uploading group file:", file.originalname, "from path:", file.path);
+      // console.log(
+      //   "Uploading group file:",
+      //   file.originalname,
+      //   "from path:",
+      //   file.path
+      // );
       return uploadOnCloudinary(file.path, "groupMessages");
     });
     const uploadResults = await Promise.all(uploadPromises);
     imageUrls = uploadResults.map((result) => result.secure_url);
-    console.log("Group upload results:", imageUrls);
+    // console.log("Group upload results:", imageUrls);
   }
 
   if (!text && imageUrls.length === 0) {
@@ -60,11 +65,11 @@ export const sendGroupMessage = asyncHandler(async (req, res) => {
   // If multiple images, store as array
   // If no images, store as empty array
   const finalImageUrls = imageUrls.length > 0 ? imageUrls : [];
-  
+
   console.log("Final image URLs for storage:", finalImageUrls);
 
   // Create and save the group message
-  const newGroupMessage = await GroupMessage.create({
+  let newGroupMessage = await GroupMessage.create({
     groupId,
     senderId,
     text: text || null,
@@ -74,6 +79,12 @@ export const sendGroupMessage = asyncHandler(async (req, res) => {
   if (!newGroupMessage) {
     throw new ApiError(500, "Something went wrong while sending the message");
   }
+
+  // ✅ Populate sender so frontend gets user info (username, avatar, etc.)
+  newGroupMessage = await newGroupMessage.populate(
+    "senderId",
+    "username fullName avatar"
+  );
 
   // Emit the message to all group members via Socket.io
   io.to(groupId).emit("newGroupMessage", newGroupMessage);

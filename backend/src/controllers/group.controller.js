@@ -411,10 +411,14 @@ export const changeRole = asyncHandler(async (req, res) => {
 
   /*
 Populate replaces the ObjectId with the actual referenced User document.
+
 path: "members.user" tells Mongoose where to populate — in this case:
+
 Go inside the members array
+
 Look at the user field (which holds an ObjectId)
 Replace it with the full User document.
+
  “we can have multiple fields in mem that’s why we write members.user”  because members is an object that might have other fields like role, joinedAt. You only want to populate user.
 select restricts which fields are fetched from the User model (instead of fetching everything).
  */

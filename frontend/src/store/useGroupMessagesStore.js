@@ -84,7 +84,10 @@ export const useGroupMessagesStore = create((set, get) => ({
       console.log("Received new group message:", newGroupMessage);
 
       const updatedMessages = [...groupMessages, newGroupMessage];
-      console.log("messages after send:", updatedMessages.map((m) => m._id));
+      console.log(
+        "messages after send:",
+        updatedMessages.map((m) => m._id)
+      );
 
       set({ groupMessages: updatedMessages });
     } catch (error) {
@@ -97,6 +100,25 @@ export const useGroupMessagesStore = create((set, get) => ({
   // NEW: Real-time subscription functions for group messages
   // These were missing in the old implementation
   // Allows group members to see messages in real-time without page refresh
+  // subscribeToGroupMessages: () => {
+  //   const { activeGroup } = get();
+  //   if (!activeGroup) return;
+
+  //   const socket = useAuthStore.getState().socket;
+  //   if (!socket) return;
+
+  //   // Listen for new group messages
+  //   // When someone in the group sends a message, all members receive it instantly
+  //   socket.on("newGroupMessage", (newMessage) => {
+  //     const isMessageForCurrentGroup = newMessage.groupId === activeGroup._id;
+  //     if (!isMessageForCurrentGroup) return;
+
+  //     // Add the new message to the current group messages
+  //     set({
+  //       groupMessages: [...get().groupMessages, newMessage],
+  //     });
+  //   });
+  // },
   subscribeToGroupMessages: () => {
     const { activeGroup } = get();
     if (!activeGroup) return;
@@ -104,24 +126,35 @@ export const useGroupMessagesStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
 
-    // Listen for new group messages
-    // When someone in the group sends a message, all members receive it instantly
+    // 🛑 FIX: Remove previous listeners to avoid duplicate messages
+    // Without this, every group switch adds another "newGroupMessage" handler.
+    socket.off("newGroupMessage");
+
+    // ✅ Now attach fresh listener
     socket.on("newGroupMessage", (newMessage) => {
       const isMessageForCurrentGroup = newMessage.groupId === activeGroup._id;
       if (!isMessageForCurrentGroup) return;
 
-      // Add the new message to the current group messages
-      set({
-        groupMessages: [...get().groupMessages, newMessage],
-      });
+      // ✅ Functional form ensures no race conditions
+      set((state) => ({
+        groupMessages: [...state.groupMessages, newMessage],
+      }));
     });
   },
 
   // Clean up socket listeners when component unmounts or group changes
   // Prevents memory leaks and ensures we don't receive messages for old groups
+  // unsubscribeFromGroupMessages: () => {
+  //   const socket = useAuthStore.getState().socket;
+  //   if (!socket) return;
+  //   socket.off("newGroupMessage");
+  // },
   unsubscribeFromGroupMessages: () => {
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
+
+    // ✅ Only remove "newGroupMessage" listener instead of all
+    // Keeps socket clean without breaking other events
     socket.off("newGroupMessage");
   },
 }));

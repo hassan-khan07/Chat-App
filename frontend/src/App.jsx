@@ -9,7 +9,7 @@ import ProfilePage from "./pages/ProfilePage";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuthStore } from "./store/userAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
@@ -22,6 +22,7 @@ const App = () => {
     // onlineUsers
   } = useAuthStore();
   const { theme } = useThemeStore();
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   // console.log({ onlineUsers });
 
@@ -45,12 +46,12 @@ const App = () => {
 
   return (
     <div data-theme={theme}>
-      <Navbar />
+      <Navbar isSidebarVisible={isSidebarVisible} setIsSidebarVisible={setIsSidebarVisible} />
 
       <Routes>
         <Route
           path="/"
-          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+          element={authUser ? <HomePage isSidebarVisible={isSidebarVisible} /> : <Navigate to="/login" />}
         />
         <Route
           path="/signup"

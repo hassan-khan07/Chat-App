@@ -103,27 +103,62 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+  // subscribeToMessages: () => {
+  //   const { selectedUser } = get();
+  //   if (!selectedUser) return;
+
+  //   const socket = useAuthStore.getState().socket;
+
+  //   socket.on("newMessage", (newMessage) => {
+  //     const isMessageSentFromSelectedUser =
+  //       newMessage.senderId === selectedUser._id;
+  //     if (!isMessageSentFromSelectedUser) return;
+
+  //     set({
+  //       messages: [...get().messages, newMessage],
+  //     });
+  //   });
+  // },
   subscribeToMessages: () => {
     const { selectedUser } = get();
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
 
-    socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser =
-        newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+    // 🛑 Remove any existing listener before adding a new one
+    // (prevents duplicate "newMessage" events when switching chats)
+    socket.off("newMessage");
 
-      set({
-        messages: [...get().messages, newMessage],
-      });
+    // ✅ Listen for new messages
+    socket.on("newMessage", (newMessage) => {
+      const { messages } = get();
+
+      // 📝 Why this check?
+      // We only want messages for the currently open chat.
+      // - If message is sent BY the selected user → show it
+      // - If message is sent TO the selected user → also show it
+      const isFromSelectedUser = newMessage.senderId === selectedUser._id;
+      const isToSelectedUser = newMessage.receiverId === selectedUser._id;
+
+      if (isFromSelectedUser || isToSelectedUser) {
+        set({ messages: [...messages, newMessage] });
+      }
     });
   },
 
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
+
+    // 📝 Why this change?
+    // Instead of removing *all* listeners blindly,
+    // we remove only "newMessage" to keep socket clean.
     socket.off("newMessage");
   },
+
+  // unsubscribeFromMessages: () => {
+  //   const socket = useAuthStore.getState().socket;
+  //   socket.off("newMessage");
+  // },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

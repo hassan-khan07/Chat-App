@@ -19,10 +19,10 @@ const Sidebar = () => {
 
   return (
     <aside className="flex flex-col w-20 h-full transition-all duration-200 border-r lg:w-72 border-base-300">
-      <div className="w-full p-5 border-b border-base-300">
+      <div className="flex items-center justify-between w-full p-5 border-b border-base-300">
         <div className="flex items-center gap-2">
           <MessageSquare className="size-6" />
-          <span className="hidden font-medium lg:block">Chat</span>
+          <span className="hidden font-medium lg:block">Chats</span>
         </div>
         <CreateGroupButton />
       </div>

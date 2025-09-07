@@ -66,18 +66,13 @@ const CreateGroupForm = ({ onClose }) => {
       {/* Group Description Input */}
       <div className="form-control">
         <label className="label">
-          <span className="flex items-center gap-2 font-medium text-gray-700 label-text">
-            <FileText size={16} className="text-blue-500" />
-            Description
-            <span className="text-sm text-gray-400">(optional)</span>
-          </span>
+          <span className="label-text">Description</span>
         </label>
         <textarea
-          placeholder="What's this group about? Add a brief description..."
+          placeholder="Description"
           value={groupDesc}
           onChange={(e) => setGroupDesc(e.target.value)}
-          rows={3}
-          className="w-full px-4 py-3 text-gray-800 placeholder-gray-400 transition-all duration-200 border-gray-200 rounded-lg resize-none textarea textarea-bordered focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+          className="textarea textarea-bordered"
         />
       </div>
 
