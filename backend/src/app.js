@@ -1,16 +1,28 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-// import { app } from "./utils/socket.js";
-const app = express();
+// import express from "express";
+// import cors from "cors";
+// import cookieParser from "cookie-parser";
+// // import { app } from "./utils/socket.js";
+// const app = express();
 
 // cors aur cookie parser configure hota hain app banna ka baad tab hi app.use aur app.get kar sakta hain
 // const app = express();
 
-import path from "path";
+// import path from "path";
 
 // jab bi async method complete hota ha wo promise return karta ha
 // app.use ham tab use karta jab middleware ya configuration setting karni hoo
+
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const app = express();
+
+// Proper __dirname for ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(
   cors({
@@ -20,7 +32,7 @@ app.use(
   })
 );
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
 // json pa limit is lya lagaye ha ta ka server crash na hoo
 app.use(express.json({ limit: "16kb" }));
