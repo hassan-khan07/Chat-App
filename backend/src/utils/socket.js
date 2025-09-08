@@ -2,9 +2,10 @@ import { Server } from "socket.io";
 import http from "http";
 import express from "express";
 import { app } from "../app.js";
+import { createServer } from "http";
 
 // const app = express();
-const server = http.createServer(app);
+const server = createServer(app);
 
 // io = new Server(server); → Socket.IO server instance (handles real-time connections).
 const io = new Server(server, {

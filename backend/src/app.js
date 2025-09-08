@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { app } from "./utils/socket.js";
+// import { app } from "./utils/socket.js";
+const app = express();
 
 // cors aur cookie parser configure hota hain app banna ka baad tab hi app.use aur app.get kar sakta hain
 // const app = express();
