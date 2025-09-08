@@ -13,13 +13,14 @@ import path from "path";
 
 app.use(
   cors({
-    // origin: process.env.CORS_ORIGIN,
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: process.env.CORS_ORIGIN,
+    // origin: "http://localhost:5173",
     credentials: true,
   })
 );
 
 const __dirname = path.resolve();
+
 // json pa limit is lya lagaye ha ta ka server crash na hoo
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
