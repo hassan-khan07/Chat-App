@@ -1,47 +1,13 @@
-// // require('dotenv').config({path: './env'})
-// import dotenv from "dotenv";
-// import connectDB from "./db/index.js";
-// import { app } from "./app.js";
-// import { createServer } from "http";
-// import { initSocket } from "./utils/socket.js";
-// // import { server } from "./utils/socket.js";
-
-// dotenv.config({
-//   path: "./.env",
-// });
-
-// // Create HTTP server
-// const server = createServer(app);
-
-// // Initialize socket.io
-// initSocket(server);
-
-// // app.listen sa hamara server start hota ha
-// connectDB()
-//   .then(() => {
-//     server.listen(process.env.PORT || 8000, () => {
-//       console.log(`⚙️ Server is running at port : ${process.env.PORT}`);
-//     });
-//   })
-//   .catch((err) => {
-//     console.log("MONGO db connection failed !!! ", err);
-//   });
-
+// require('dotenv').config({path: './env'})
 import dotenv from "dotenv";
 import connectDB from "./db/index.js";
 import { app } from "./app.js";
-import { createServer } from "http";
-import { initSocket } from "./utils/socket.js";
+import { server } from "./utils/socket.js";
+dotenv.config({
+  path: "./.env",
+});
 
-dotenv.config({ path: "./.env" });
-
-// Create HTTP server
-const server = createServer(app);
-
-// Initialize socket.io
-initSocket(server);
-
-// Start server after DB connects
+// app.listen sa hamara server start hota ha
 connectDB()
   .then(() => {
     server.listen(process.env.PORT || 8000, () => {
@@ -72,5 +38,4 @@ const app = express()
         throw err
     }
 })()
-
 */
