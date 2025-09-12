@@ -13,7 +13,7 @@ export const useGroupMessagesStore = create((set, get) => ({
   getGroupMessages: async (groupId) => {
     set({ isGroupMessagesLoading: true });
     try {
-      const res = await axiosInstance.get(`/group-messages/${groupId}`);
+      const res = await axiosInstance.get(`/group-messages/${groupId}/messages`);
       set({ groupMessages: res.data.data, isGroupMessagesLoading: false });
     } catch (error) {
       set({ isGroupMessagesLoading: false });
@@ -68,14 +68,17 @@ export const useGroupMessagesStore = create((set, get) => ({
         });
       }
 
-      console.log("Sending message to:", `/group-messages/${activeGroup._id}`);
+      console.log(
+        "Sending message to:",
+        `/group-messages/${activeGroup._id}/messages`
+      );
       console.log("MessageData:", {
         text: messageData.text,
         imageCount: messageData.images?.length || 0,
       });
 
       const res = await axiosInstance.post(
-        `/group-messages/${activeGroup._id}`,
+        `/group-messages/${activeGroup._id}/messages`,
         formData
       );
 
