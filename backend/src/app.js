@@ -97,52 +97,24 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-// 🔥 DEBUGGING: ALL ROUTES COMMENTED OUT
-console.log("🔥 DEBUGGING MODE: All routes disabled");
-
-// STEP 1: Test with NO routes first - uncomment ONE by ONE to find the problem
-
-/*
-console.log("Loading user routes...");
-import userRouter from "./routes/user.routes.js";
-app.use("/api/users", userRouter);
-console.log("✅ User routes loaded");
-*/
-
-/*
-console.log("Loading message routes...");
-import messageRoutes from "./routes/message.routes.js";
-app.use("/api/messages", messageRoutes);
-console.log("✅ Message routes loaded");
-*/
-
-/*
-console.log("Loading group routes...");
-import groupRoutes from "./routes/group.routes.js";
-app.use("/api/groups", groupRoutes);
-console.log("✅ Group routes loaded");
-*/
-
-/*
-console.log("Loading group message routes...");
-import groupMessagesRoutes from "./routes/groupMessages.routes.js";
-app.use("/api/group-messages", groupMessagesRoutes);
-console.log("✅ Group message routes loaded");
-*/
+console.log("🔥 DEBUGGING MODE: Testing without wildcard route");
 
 import { ApiError } from "./utils/ApiError.js";
 
 // Basic health check route
 app.get("/health", (req, res) => {
-  res.json({ status: "Server is running!", message: "All routes disabled for debugging" });
+  res.json({ status: "Server is running!", message: "Testing without wildcard route" });
 });
 
+// 🔥 REMOVED: The production wildcard route for testing
+/*
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
+*/
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
@@ -164,5 +136,5 @@ app.use((err, req, res, next) => {
   return res.status(error.statusCode).json(response);
 });
 
-console.log("🔥 Server starting with NO routes for debugging...");
+console.log("🔥 Server starting without production routes...");
 export { app };
