@@ -82,9 +82,30 @@ import path from "path";
 
 const app = express();
 
+// app.use(
+//   cors({
+//     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+//     credentials: true,
+//   })
+// );
+
+// const allowedOrigins = [
+//   "http://localhost:5173", // Dev
+//   process.env.CORS_ORIGIN, // Prod (Render domain)
+// ];
+
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    origin: [
+      "http://localhost:5173", // Dev
+      process.env.CORS_ORIGIN, // Prod (Render domain)
+    ],
     credentials: true,
   })
 );
