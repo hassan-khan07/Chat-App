@@ -15,11 +15,17 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 router.route("/sidebar").get(verifyJWT, getGroupsForSidebar);
 router.route("/").post(verifyJWT, upload.single("groupImage"), createGroup);
-router.route("/:groupId").patch(verifyJWT, updateGroupDetails);
+// router.route("/:groupId").patch(verifyJWT, updateGroupDetails);
 router
   .route("/:groupId/avatar")
   .patch(verifyJWT, upload.single("groupImage"), updateGroupAvatar);
-router.route("/:groupId").delete(verifyJWT, deleteGroup);
+// router.route("/:groupId").delete(verifyJWT, deleteGroup);
+
+// NEW - Combined route chain
+router
+  .route("/:groupId")
+  .patch(verifyJWT, updateGroupDetails)
+  .delete(verifyJWT, deleteGroup);
 router.route("/:groupId/addMember").post(verifyJWT, addMemberToGroup);
 router
   .route("/:groupId/removeMember/:userId")
