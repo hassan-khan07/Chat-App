@@ -348,7 +348,7 @@ export const removeMemberToGroup = asyncHandler(async (req, res) => {
 export const changeRole = asyncHandler(async (req, res) => {
   const { groupId, userId } = req.params;
   const { newRole } = req.body;
-  console.log("Incoming body:", req.body);
+  // console.log("Incoming body:", req.body);
 
   let group = await Group.findById(groupId);
   if (!group) throw new ApiError(404, "Group not found");

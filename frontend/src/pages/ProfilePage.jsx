@@ -7,10 +7,10 @@ const ProfilePage = () => {
   const [previewImg, setPreviewImg] = useState(null);
 
   // Debug: Log authUser data
-  console.log("ProfilePage - authUser:", authUser);
-  console.log("ProfilePage - authUser.fullName:", authUser?.fullName);
-  console.log("ProfilePage - authUser.email:", authUser?.email);
-  console.log("ProfilePage - authUser.avatar:", authUser?.avatar);
+  // console.log("ProfilePage - authUser:", authUser);
+  // console.log("ProfilePage - authUser.fullName:", authUser?.fullName);
+  // console.log("ProfilePage - authUser.email:", authUser?.email);
+  // console.log("ProfilePage - authUser.avatar:", authUser?.avatar);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];

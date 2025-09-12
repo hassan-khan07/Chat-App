@@ -14,7 +14,7 @@ const MessageInput = () => {
 
   // console.log("MessageInput render, selectedUser:", selectedUser);
 
-  console.log("SelectedGroup from useGroupMessagesStore:", activeGroup);
+  // console.log("SelectedGroup from useGroupMessagesStore:", activeGroup);
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);

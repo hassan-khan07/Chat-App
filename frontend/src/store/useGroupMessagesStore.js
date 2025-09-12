@@ -68,14 +68,14 @@ export const useGroupMessagesStore = create((set, get) => ({
         });
       }
 
-      console.log(
-        "Sending message to:",
-        `/group-messages/${activeGroup._id}/messages`
-      );
-      console.log("MessageData:", {
-        text: messageData.text,
-        imageCount: messageData.images?.length || 0,
-      });
+      // console.log(
+      //   "Sending message to:",
+      //   `/group-messages/${activeGroup._id}/messages`
+      // );
+      // console.log("MessageData:", {
+      //   text: messageData.text,
+      //   imageCount: messageData.images?.length || 0,
+      // });
 
       const res = await axiosInstance.post(
         `/group-messages/${activeGroup._id}/messages`,
@@ -83,14 +83,14 @@ export const useGroupMessagesStore = create((set, get) => ({
       );
 
       const newGroupMessage = res.data.data;
-      console.log("response from server:", res.data);
-      console.log("Received new group message:", newGroupMessage);
+      // console.log("response from server:", res.data);
+      // console.log("Received new group message:", newGroupMessage);
 
       const updatedMessages = [...groupMessages, newGroupMessage];
-      console.log(
-        "messages after send:",
-        updatedMessages.map((m) => m._id)
-      );
+      // console.log(
+      //   "messages after send:",
+      //   updatedMessages.map((m) => m._id)
+      // );
 
       set({ groupMessages: updatedMessages });
     } catch (error) {

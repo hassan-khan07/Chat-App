@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 
 const BASE_URL =
   // import.meta.env.MODE === "development" ? "http://localhost:8000" : "/";
-     import.meta.env.MODE === "development" ? "http://localhost:8000" : "/";
+  import.meta.env.MODE === "development" ? "http://localhost:8000" : "/";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -25,7 +25,11 @@ export const useAuthStore = create((set, get) => ({
       set({ authUser: res.data.data });
       get().connectSocket();
     } catch (error) {
-      console.log("Error in checkAuth:", error);
+      // console.log("Error in checkAuth:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Authentication failed. Please log in again."
+      );
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -128,10 +132,10 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.patch("/users/update-profile", formData);
 
       set({ authUser: res.data.data });
-      console.log("res in updateAvatar:", res.data.data);
+      // console.log("res in updateAvatar:", res.data.data);
       toast.success("Avatar updated successfully!");
     } catch (error) {
-      console.log("error in updateProfile:", error);
+      // console.log("error in updateProfile:", error);
       toast.error(error.response?.data?.message || "Profile update failed");
     } finally {
       set({ isUpdatingProfile: false });

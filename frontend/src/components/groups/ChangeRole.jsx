@@ -32,12 +32,12 @@ const handleChangeRole = async (member) => {
   const newRole = member.role === "admin" ? "member" : "admin";
 
   // 🔍 Debug log before sending
-  console.log("Attempting role change:", {
-    groupId: group._id,
-    targetUserId: member.user._id,
-    currentRole: member.role,
-    newRole,
-  });
+  // console.log("Attempting role change:", {
+  //   groupId: group._id,
+  //   targetUserId: member.user._id,
+  //   currentRole: member.role,
+  //   newRole,
+  // });
 
   setIsProcessing(member.user._id);
 

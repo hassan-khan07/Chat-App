@@ -2,13 +2,13 @@ import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 
 // Debug: Check environment variables
-console.log("Environment variables loaded:");
-console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
-console.log("CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY);
-console.log(
-  "CLOUDINARY_API_SECRET:",
-  process.env.CLOUDINARY_API_SECRET ? "[LOADED]" : "[NOT LOADED]"
-);
+// console.log("Environment variables loaded:");
+// console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
+// console.log("CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY);
+// console.log(
+//   "CLOUDINARY_API_SECRET:",
+//   process.env.CLOUDINARY_API_SECRET ? "[LOADED]" : "[NOT LOADED]"
+// );
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -17,17 +17,17 @@ cloudinary.config({
 });
 
 const uploadOnCloudinary = async (localFilePath) => {
-  console.log("Starting upload for:", localFilePath);
+  // console.log("Starting upload for:", localFilePath);
   try {
     if (!localFilePath) return null;
 
     //upload to cloudinary if localFilePath exists
-    console.log("Calling cloudinary uploader...");
+    // console.log("Calling cloudinary uploader...");
     const result = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
     });
 
-    console.log("Upload successful! URL:", result.secure_url);
+    // console.log("Upload successful! URL:", result.secure_url);
 
     fs.unlinkSync(localFilePath); //remove file from localFilePath after uploading to cloudinary
     return result;

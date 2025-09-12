@@ -73,11 +73,11 @@ export const useChatStore = create((set, get) => ({
         });
       }
 
-      console.log("Sending message to:", `/messages/send/${selectedUser._id}`);
-      console.log("MessageData:", {
-        text: messageData.text,
-        imageCount: messageData.images?.length || 0,
-      });
+      // console.log("Sending message to:", `/messages/send/${selectedUser._id}`);
+      // console.log("MessageData:", {
+      //   text: messageData.text,
+      //   imageCount: messageData.images?.length || 0,
+      // });
 
       const res = await axiosInstance.post(
         `/messages/send/${selectedUser._id}`,
@@ -87,14 +87,14 @@ export const useChatStore = create((set, get) => ({
       // ✅ The backend response wraps the message inside `data`
       const newMessage = res.data.data;
 
-      console.log("Response from backend:", res.data);
-      console.log("Saved message from backend:", newMessage);
+      // console.log("Response from backend:", res.data);
+      // console.log("Saved message from backend:", newMessage);
 
       const newMessages = [...messages, newMessage];
-      console.log(
-        "Messages after send:",
-        newMessages.map((m) => m?._id)
-      );
+      // console.log(
+      //   "Messages after send:",
+      //   newMessages.map((m) => m?._id)
+      // );
 
       set({ messages: newMessages });
     } catch (error) {

@@ -140,21 +140,21 @@ const GroupChatContainer = () => {
           const isCurrentUserMessage = messageSenderIdStr === authUserIdStr;
 
           // Debug logging to verify the fix
-          console.log(
-            "Message sender ID:",
-            messageSenderId,
-            "(type:",
-            typeof messageSenderId,
-            ")"
-          );
-          console.log(
-            "Auth user ID:",
-            authUser._id,
-            "(type:",
-            typeof authUser._id,
-            ")"
-          );
-          console.log("Is current user message:", isCurrentUserMessage);
+          // console.log(
+          //   "Message sender ID:",
+          //   messageSenderId,
+          //   "(type:",
+          //   typeof messageSenderId,
+          //   ")"
+          // );
+          // console.log(
+          //   "Auth user ID:",
+          //   authUser._id,
+          //   "(type:",
+          //   typeof authUser._id,
+          //   ")"
+          // );
+          // console.log("Is current user message:", isCurrentUserMessage);
 
           return (
             <div
