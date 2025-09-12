@@ -75,7 +75,6 @@
 
 // export { app };
 
-
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -97,44 +96,47 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
-console.log("🔥 DEBUGGING MODE: Testing without wildcard route");
-
+// Routes import
+import userRouter from "./routes/user.routes.js";
+import messageRoutes from "./routes/message.routes.js";
+import groupRoutes from "./routes/group.routes.js";
+import groupMessagesRoutes from "./routes/groupMessages.routes.js";
 import { ApiError } from "./utils/ApiError.js";
 
-// Basic health check route
-app.get("/health", (req, res) => {
-  res.json({ status: "Server is running!", message: "Testing without wildcard route" });
-});
+// Routes declaration
+app.use("/api/users", userRouter);
+app.use("/api/messages", messageRoutes);
+app.use("/api/groups", groupRoutes);
+app.use("/api/group-messages", groupMessagesRoutes);
 
-// 🔥 REMOVED: The production wildcard route for testing
-/*
+// 🔥 FIXED: Better way to handle production frontend routing
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
-  app.get("*", (req, res) => {
+
+  // 🔥 FIX: Use a more specific catch-all that doesn't conflict with API routes
+  app.get(/^(?!\/api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
   });
 }
-*/
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
   let error = err;
-  
+
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode || 500;
     const message = error.message || "Something went wrong";
     error = new ApiError(statusCode, message, error?.errors || [], err.stack);
   }
-  
+
   const response = {
     success: false,
     message: error.message,
     statusCode: error.statusCode,
     ...(process.env.NODE_ENV === "development" && { stack: error.stack }),
   };
-  
+
   return res.status(error.statusCode).json(response);
 });
 
-console.log("🔥 Server starting without production routes...");
 export { app };
