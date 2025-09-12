@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import http from "http";
-import express from "express";
+// import express from "express";
 import { app } from "../app.js";
 
 // const app = express();
@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
   });
 });
 
-export { io, app, server };
+export { io, server };
 
 // diff between socket and io
 

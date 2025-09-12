@@ -1,12 +1,11 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { app } from "./utils/socket.js";
+// import { app } from "./utils/socket.js";
+import path from "path";
 
 // cors aur cookie parser configure hota hain app banna ka baad tab hi app.use aur app.get kar sakta hain
-// const app = express();
-
-import path from "path";
+const app = express();
 
 // jab bi async method complete hota ha wo promise return karta ha
 // app.use ham tab use karta jab middleware ya configuration setting karni hoo
@@ -14,7 +13,8 @@ import path from "path";
 app.use(
   cors({
     // origin: process.env.CORS_ORIGIN,
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
   })
 );
